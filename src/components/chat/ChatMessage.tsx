@@ -5,23 +5,30 @@ type ChatMessageProps = {
 
 export default function ChatMessage({ message, isUser }: ChatMessageProps) {
   return (
-    <div className={`py-5 ${isUser ? 'bg-gray-50' : 'bg-white'}`}>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 flex">
-        <div className={`flex-shrink-0 mr-4`}>
-          <div
-            className={`h-8 w-8 rounded-full flex items-center justify-center ${
-              isUser ? 'bg-gray-300' : 'bg-green-500'
-            }`}
-          >
-            {isUser ? (
-              <span className="text-gray-700 text-sm">U</span>
-            ) : (
-              <span className="text-white text-sm">AI</span>
-            )}
-          </div>
-        </div>
-        <div className="flex-grow">
-          <p className="text-gray-800 whitespace-pre-wrap">{message}</p>
+    <div className={`flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
+      {/* Avatar */}
+      <div className={`h-8 w-8 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 ${
+        isUser 
+          ? 'bg-slate-600' 
+          : 'bg-blue-600'
+      }`}>
+        <span className="text-white text-xs font-medium">
+          {isUser ? 'S' : 'AI'}
+        </span>
+      </div>
+      
+      {/* Message */}
+      <div className={`max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl ${
+        isUser ? 'ml-auto' : 'mr-auto'
+      }`}>
+        <div className={`rounded-2xl px-4 py-3 shadow-sm border ${
+          isUser 
+            ? 'bg-blue-600 text-white border-blue-600' 
+            : 'bg-white text-slate-900 border-slate-200'
+        }`}>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+            {message}
+          </p>
         </div>
       </div>
     </div>
