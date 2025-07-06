@@ -12,8 +12,8 @@ type Category = {
 
 const categories: Category[] = [
   { id: 'elma', name: 'Elma', icon: '🍎', description: 'Elma yetiştiriciliği' },
-  { id: 'çay', name: 'Çay', icon: '🍃', description: 'Çay üretimi' },
-  { id: 'fındık', name: 'Fındık', icon: '🌰', description: 'Fındık tarımı' },
+  { id: 'cay', name: 'Çay', icon: '🍃', description: 'Çay üretimi' },
+  { id: 'findik', name: 'Fındık', icon: '🌰', description: 'Fındık tarımı' },
 ];
 
 export default function Sidebar() {

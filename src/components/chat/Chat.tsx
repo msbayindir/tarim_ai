@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 
@@ -5,6 +7,13 @@ type Message = {
   id: string;
   text: string;
   isUser: boolean;
+  sources?: {
+    document: string;
+    page: number;
+    paragraph: number;
+    confidence: number;
+    meta: any;
+  }[];
 };
 
 type ChatProps = {
@@ -13,13 +22,26 @@ type ChatProps = {
   onMessagesUpdate: (messages: Message[]) => void;
 };
 
+type ApiResponse = {
+  answer: string;
+  sources: {
+    document: string;
+    page: number;
+    paragraph: number;
+    confidence: number;
+    meta: any;
+  }[];
+  processing_time: number;
+  status: string;
+};
+
 export default function Chat({ category, messages, onMessagesUpdate }: ChatProps) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Scroll to bottom whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,7 +51,7 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-  
+
   // Add subtle animation when category changes
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -49,7 +71,7 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
     }
   }, [isTyping]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -59,51 +81,61 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
       text: input,
       isUser: true,
     };
-    
-    const updatedMessages = [...messages, userMessage];
-    onMessagesUpdate(updatedMessages);
+
+    // Clear input and show typing indicator
+    const questionText = input;
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI response (this would be replaced with an API call)
-    setTimeout(() => {
-      setIsTyping(false);
+    // Update messages with user message
+    const updatedMessages = [...messages, userMessage];
+    onMessagesUpdate(updatedMessages);
+
+    try {
+      // Send request to category-specific API endpoint
+      const response = await fetch(`https://certain-tuna-rapidly.ngrok-free.app/api/v1/search/pdf/${category}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: questionText,
+          top_k: 10
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data: ApiResponse = await response.json();
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: getResponseForCategory(category, input),
+        text: data.answer,
+        isUser: false,
+        sources: data.sources
+      };
+
+      // Update messages with AI response
+      onMessagesUpdate([...updatedMessages, aiResponse]);
+    } catch (error) {
+      console.error('Error fetching AI response:', error);
+
+      // Show error message
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
         isUser: false,
       };
-      onMessagesUpdate([...updatedMessages, aiResponse]);
-    }, 1500);
-  };
 
-  const getResponseForCategory = (category: string, userInput: string): string => {
-    // This is just for demo purposes - in reality this would be handled by the AI backend
-    const lowercaseInput = userInput.toLowerCase();
-    
-    if (category === 'elma') {
-      if (lowercaseInput.includes('fiyat') || lowercaseInput.includes('fiyatı')) {
-        return 'Elma fiyatları, türüne göre değişmekle birlikte şu anda kilogram başına 15-25 TL arasındadır. Starking elmaları genellikle daha yüksek fiyatlardan satılmaktadır.';
-      } else if (lowercaseInput.includes('yetiştir') || lowercaseInput.includes('nasıl')) {
-        return 'Elma yetiştirmek için güneşli bir alan, iyi drene edilen toprak ve düzenli sulama gerekir. Ağaçlar, ilkbaharda ekilmeli ve düzenli olarak budağı yapılmalıdır.';
-      }
-      return 'Elmalar, Türkiye\'nin önemli tarım ürünlerinden biridir ve Isparta, Karaman ve Niğde gibi bölgelerde yaygın olarak yetiştirilmektedir. Daha fazla bilgi için sorularınızı sorabilirsiniz.';
-    } else if (category === 'çay') {
-      if (lowercaseInput.includes('fiyat') || lowercaseInput.includes('fiyatı')) {
-        return 'Çay fiyatları, kalitesine göre değişmekle birlikte şu anda kilogram başına 120-200 TL arasındadır. Yüksek kaliteli Rize çayları daha yüksek fiyatlarla satılmaktadır.';
-      } else if (lowercaseInput.includes('yetiştir') || lowercaseInput.includes('nasıl')) {
-        return 'Çay, özellikle Karadeniz bölgesindeki nemli ve yağışlı iklimlerde iyi yetişir. Asitli toprakları sever ve düzenli hasat gerektirir. Genellikle ilkbahar ve yaz aylarında toplanır.';
-      }
-      return 'Çay, Türkiye\'nin Karadeniz bölgesinde, özellikle Rize ve Trabzon illerinde yaygın olarak yetiştirilen önemli bir tarım ürünüdür. Daha fazla bilgi için sorularınızı sorabilirsiniz.';
-    } else {
-      if (lowercaseInput.includes('fiyat') || lowercaseInput.includes('fiyatı')) {
-        return 'Fındık fiyatları, piyasa koşullarına bağlı olarak değişmekle birlikte şu anda kilogram başına 160-200 TL arasındadır. Levant kalite fındıklar genellikle daha değerlidir.';
-      } else if (lowercaseInput.includes('yetiştir') || lowercaseInput.includes('nasıl')) {
-        return 'Fındık, hafif eğimli arazilerde ve iyi drene edilen topraklarda iyi yetişir. Ağaçların dikilmesinden sonra verime gelmesi 3-5 yıl alabilir ve düzenli budama gerektirirler.';
-      }
-      return 'Fındık, Türkiye\'nin Karadeniz bölgesinde, özellikle Ordu, Giresun ve Samsun illerinde yetiştirilen önemli bir ihracat ürünüdür. Türkiye, dünya fındık üretiminin yaklaşık %70\'ini karşılamaktadır.';
+      onMessagesUpdate([...updatedMessages, errorResponse]);
+    } finally {
+      setIsTyping(false);
     }
   };
+
+  // No need for PDF selection anymore since we use category-specific endpoints
 
   return (
     <div ref={chatContainerRef} className="flex flex-col h-full bg-slate-50 transition-opacity duration-300 ease-in-out">
@@ -113,8 +145,8 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
           <div className="h-10 w-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-sm">
             <span className="text-xl">
               {category === 'elma' && '🍎'}
-              {category === 'çay' && '🍃'}
-              {category === 'fındık' && '🌰'}
+              {category === 'cay' && '🍃'}
+              {category === 'findik' && '🌰'}
             </span>
           </div>
           <div>
@@ -132,8 +164,8 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
               <div className="h-20 w-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
                 <span className="text-3xl">
                   {category === 'elma' && '🍎'}
-                  {category === 'çay' && '🍃'}
-                  {category === 'fındık' && '🌰'}
+                  {category === 'cay' && '🍃'}
+                  {category === 'findik' && '🌰'}
                 </span>
               </div>
               <h3 className="text-lg font-medium text-slate-600 mb-2">Merhaba!</h3>
