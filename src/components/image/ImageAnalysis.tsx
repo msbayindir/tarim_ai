@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 
 type PredictionResult = {
   class_id: number;
@@ -154,9 +155,11 @@ export default function ImageAnalysis({ category }: ImageAnalysisProps) {
           </label>
         ) : (
           <div className="relative">
-            <img
+            <Image
               src={imagePreview}
               alt="Seçilen görüntü"
+              width={400}
+              height={192}
               className="w-full h-48 object-cover rounded-xl border border-slate-200"
             />
             <button

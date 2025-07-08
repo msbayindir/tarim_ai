@@ -12,7 +12,7 @@ type Message = {
     page: number;
     paragraph: number;
     confidence: number;
-    meta: any;
+    meta: Record<string, unknown>;
   }[];
 };
 
@@ -29,7 +29,7 @@ type ApiResponse = {
     page: number;
     paragraph: number;
     confidence: number;
-    meta: any;
+    meta: Record<string, unknown>;
   }[];
   processing_time: number;
   status: string;

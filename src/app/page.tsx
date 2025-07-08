@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Chat from "@/components/chat/Chat";
 import ImageAnalysis from "@/components/image/ImageAnalysis";
@@ -19,7 +19,7 @@ type CategoryMessages = {
   [key: string]: Message[];
 };
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState<string>("elma");
   const [categoryMessages, setCategoryMessages] = useState<CategoryMessages>({
@@ -62,5 +62,13 @@ export default function Home() {
         </div>
       </div>
     </MainLayout>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center">Yükleniyor...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
