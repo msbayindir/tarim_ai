@@ -138,9 +138,9 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
   // No need for PDF selection anymore since we use category-specific endpoints
 
   return (
-    <div ref={chatContainerRef} className="flex flex-col h-full bg-slate-50 transition-opacity duration-300 ease-in-out">
+    <div ref={chatContainerRef} className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm transition-opacity duration-300 ease-in-out">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4">
+      <header className="bg-white border-b border-slate-200 px-6 py-4 rounded-t-2xl">
         <div className="flex items-center space-x-3">
           <div className="h-10 w-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-sm">
             <span className="text-xl">
@@ -203,7 +203,7 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
       </main>
 
       {/* Input */}
-      <footer className="bg-white border-t border-slate-200 px-4 py-4">
+      <footer className="bg-white border-t border-slate-200 px-4 py-4 rounded-b-2xl">
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSubmit} className="flex items-end space-x-3">
             <div className="flex-1">

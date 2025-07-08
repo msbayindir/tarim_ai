@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Chat from "@/components/chat/Chat";
+import ImageAnalysis from "@/components/image/ImageAnalysis";
 
 type Message = {
   id: string;
@@ -44,12 +45,22 @@ export default function Home() {
 
   return (
     <MainLayout>
-      <Chat
-        key={category}
-        category={category}
-        messages={categoryMessages[category] || []}
-        onMessagesUpdate={updateMessages}
-      />
+      <div className="flex h-full gap-6 p-6">
+        {/* Chat Section */}
+        <div className="flex-1">
+          <Chat
+            key={category}
+            category={category}
+            messages={categoryMessages[category] || []}
+            onMessagesUpdate={updateMessages}
+          />
+        </div>
+        
+        {/* Image Analysis Section */}
+        <div className="w-96">
+          <ImageAnalysis category={category} />
+        </div>
+      </div>
     </MainLayout>
   );
 }
