@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tarım AI Chatbot",
-  description: "Tarım sektörü için AI destekli sohbet uygulaması",
+  title: "Tıp AI Chatbot",
+  description: "Tıbbi eğitim için AI destekli sohbet uygulaması",
 };
 
 export default function RootLayout({

@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Chat from "@/components/chat/Chat";
-import ImageAnalysis from "@/components/image/ImageAnalysis";
 
 type Message = {
   id: string;
@@ -13,26 +12,24 @@ type Message = {
 };
 
 type CategoryMessages = {
-  elma: Message[];
-  cay: Message[];
-  findik: Message[];
+  biyokimya1: Message[];
+  biyokimya2: Message[];
   [key: string]: Message[];
 };
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  const [category, setCategory] = useState<string>("elma");
+  const [category, setCategory] = useState<string>("biyokimya1");
   const [categoryMessages, setCategoryMessages] = useState<CategoryMessages>({
-    elma: [],
-    cay: [],
-    findik: [],
+    biyokimya1: [],
+    biyokimya2: [],
   });
   useEffect(() => {
     const categoryParam = searchParams.get("category");
-    if (categoryParam && ["elma", "cay", "findik"].includes(categoryParam)) {
+    if (categoryParam && ["biyokimya1", "biyokimya2"].includes(categoryParam)) {
       setCategory(categoryParam);
     } else {
-      setCategory("elma");
+      setCategory("biyokimya1");
     }
   }, [searchParams]);
 
@@ -45,8 +42,8 @@ function HomeContent() {
 
   return (
     <MainLayout>
-      <div className="flex h-full gap-6 p-6">
-        {/* Chat Section */}
+      <div className="flex h-full p-6">
+        {/* Chat Section - Full Width */}
         <div className="flex-1">
           <Chat
             key={category}
@@ -54,11 +51,6 @@ function HomeContent() {
             messages={categoryMessages[category] || []}
             onMessagesUpdate={updateMessages}
           />
-        </div>
-        
-        {/* Image Analysis Section */}
-        <div className="w-96">
-          <ImageAnalysis category={category} />
         </div>
       </div>
     </MainLayout>

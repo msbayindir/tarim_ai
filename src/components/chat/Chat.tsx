@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import ChatMessage from './ChatMessage';
+import { useState, useRef, useEffect } from "react";
+import ChatMessage from "./ChatMessage";
 
 type Message = {
   id: string;
@@ -35,8 +35,12 @@ type ApiResponse = {
   status: string;
 };
 
-export default function Chat({ category, messages, onMessagesUpdate }: ChatProps) {
-  const [input, setInput] = useState('');
+export default function Chat({
+  category,
+  messages,
+  onMessagesUpdate,
+}: ChatProps) {
+  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +48,7 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
 
   // Scroll to bottom whenever messages update
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Focus input on mount
@@ -55,10 +59,10 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
   // Add subtle animation when category changes
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.classList.add('fade-in');
+      chatContainerRef.current.classList.add("fade-in");
       setTimeout(() => {
         if (chatContainerRef.current) {
-          chatContainerRef.current.classList.remove('fade-in');
+          chatContainerRef.current.classList.remove("fade-in");
         }
       }, 300);
     }
@@ -84,7 +88,7 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
 
     // Clear input and show typing indicator
     const questionText = input;
-    setInput('');
+    setInput("");
     setIsTyping(true);
 
     // Update messages with user message
@@ -93,19 +97,22 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
 
     try {
       // Send request to category-specific API endpoint
-      const response = await fetch(`https://certain-tuna-rapidly.ngrok-free.app/api/v1/search/pdf/${category}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          question: questionText,
-          top_k: 10
-        }),
-      });
+      const response = await fetch(
+        `https://certain-tuna-rapidly.ngrok-free.app/api/v1/search/pdf/${category}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            question: questionText,
+            top_k: 20,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('API request failed');
+        throw new Error("API request failed");
       }
 
       const data: ApiResponse = await response.json();
@@ -114,18 +121,18 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
         id: (Date.now() + 1).toString(),
         text: data.answer,
         isUser: false,
-        sources: data.sources
+        sources: data.sources,
       };
 
       // Update messages with AI response
       onMessagesUpdate([...updatedMessages, aiResponse]);
     } catch (error) {
-      console.error('Error fetching AI response:', error);
+      console.error("Error fetching AI response:", error);
 
       // Show error message
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
+        text: "Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.",
         isUser: false,
       };
 
@@ -138,20 +145,26 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
   // No need for PDF selection anymore since we use category-specific endpoints
 
   return (
-    <div ref={chatContainerRef} className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm transition-opacity duration-300 ease-in-out">
+    <div
+      ref={chatContainerRef}
+      className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm transition-opacity duration-300 ease-in-out"
+    >
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 rounded-t-2xl">
         <div className="flex items-center space-x-3">
           <div className="h-10 w-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-sm">
             <span className="text-xl">
-              {category === 'elma' && '🍎'}
-              {category === 'cay' && '🍃'}
-              {category === 'findik' && '🌰'}
+              {category === "biyokimya1" && "🧬"}
+              {category === "biyokimya2" && "⚗️"}
             </span>
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-slate-900 capitalize">{category} Uzmanı</h1>
-            <p className="text-sm text-slate-500">Size yardımcı olmak için burada</p>
+            <h1 className="text-lg font-semibold text-slate-900 capitalize">
+              {category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"} Uzmanı
+            </h1>
+            <p className="text-sm text-slate-500">
+              Size yardımcı olmak için burada
+            </p>
           </div>
         </div>
       </header>
@@ -163,23 +176,26 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
             <div className="flex flex-col items-center justify-center h-full min-h-96 text-slate-400">
               <div className="h-20 w-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
                 <span className="text-3xl">
-                  {category === 'elma' && '🍎'}
-                  {category === 'cay' && '🍃'}
-                  {category === 'findik' && '🌰'}
+                  {category === "biyokimya1" && "🧬"}
+                  {category === "biyokimya2" && "⚗️"}
                 </span>
               </div>
-              <h3 className="text-lg font-medium text-slate-600 mb-2">Merhaba!</h3>
+              <h3 className="text-lg font-medium text-slate-600 mb-2">
+                Merhaba!
+              </h3>
               <p className="text-center text-slate-500 max-w-md">
-                {category} konusunda size nasıl yardımcı olabilirim? Sorularınızı sormaktan çekinmeyin.
+                {category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"}{" "}
+                konusunda size nasıl yardımcı olabilirim? Sorularınızı sormaktan
+                çekinmeyin.
               </p>
             </div>
           ) : (
             <>
               {messages.map((message) => (
-                <ChatMessage 
-                  key={message.id} 
-                  message={message.text} 
-                  isUser={message.isUser} 
+                <ChatMessage
+                  key={message.id}
+                  message={message.text}
+                  isUser={message.isUser}
                 />
               ))}
               {isTyping && (
@@ -190,8 +206,14 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
                   <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-200">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div
+                        className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -212,7 +234,9 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={`${category} hakkında bir şey sorun...`}
+                placeholder={`${
+                  category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"
+                } hakkında bir şey sorun...`}
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-slate-900 placeholder-slate-500"
                 disabled={isTyping}
               />
@@ -222,12 +246,22 @@ export default function Chat({ category, messages, onMessagesUpdate }: ChatProps
               disabled={isTyping || !input.trim()}
               className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-200 ${
                 isTyping || !input.trim()
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                />
               </svg>
             </button>
           </form>
