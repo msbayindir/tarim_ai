@@ -23,16 +23,14 @@ type ChatProps = {
 };
 
 type ApiResponse = {
-  answer: string;
-  sources: {
+  message: string;
+  data: {
+    question: string;
+    answer: string;
     document: string;
-    page: number;
-    paragraph: number;
-    confidence: number;
-    meta: Record<string, unknown>;
-  }[];
-  processing_time: number;
-  status: string;
+    retrieved_chunks: number;
+    similarity_scores: number[];
+  };
 };
 
 export default function Chat({
@@ -95,10 +93,20 @@ export default function Chat({
     const updatedMessages = [...messages, userMessage];
     onMessagesUpdate(updatedMessages);
 
+    // Map category to document name
+    const getDocumentName = (category: string) => {
+      switch (category) {
+        case 'inkilap': return 'inklap8';
+        case 'matematik': return 'matematik6';
+        case 'turkce': return 'turkce7';
+        default: return 'inklap8';
+      }
+    };
+
     try {
-      // Send request to category-specific API endpoint
+      // Send request to local API endpoint
       const response = await fetch(
-        `https://certain-tuna-rapidly.ngrok-free.app/api/v1/search/pdf/${category}`,
+        "https://brief-jaybird-allowed.ngrok-free.app/api/v1/rag/chat",
         {
           method: "POST",
           headers: {
@@ -106,8 +114,8 @@ export default function Chat({
             "ngrok-skip-browser-warning": "true",
           },
           body: JSON.stringify({
+            document_name: getDocumentName(category),
             question: questionText,
-            top_k: 20,
           }),
         }
       );
@@ -120,9 +128,8 @@ export default function Chat({
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.answer,
+        text: data.data.answer,
         isUser: false,
-        sources: data.sources,
       };
 
       // Update messages with AI response
