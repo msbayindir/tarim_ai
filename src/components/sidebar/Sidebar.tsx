@@ -11,14 +11,15 @@ type Category = {
 };
 
 const categories: Category[] = [
-  { id: 'biyokimya1', name: 'Biyokimya 1', icon: '🧬', description: 'Temel biyokimya konuları' },
-  { id: 'biyokimya2', name: 'Biyokimya 2', icon: '⚗️', description: 'İleri biyokimya konuları' },
+  { id: 'inkilap', name: 'İnkılap Tarihi', icon: '🏛️', description: '8. Sınıf İnkılap Tarihi' },
+  { id: 'matematik', name: 'Matematik', icon: '🔢', description: '6. Sınıf Matematik' },
+  { id: 'turkce', name: 'Türkçe', icon: '📚', description: '7. Sınıf Türkçe' },
 ];
 
 export default function Sidebar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeCategory, setActiveCategory] = useState<string>('biyokimya1');
+  const [activeCategory, setActiveCategory] = useState<string>('inkilap');
 
   useEffect(() => {
     const categoryParam = searchParams.get('category');
@@ -43,8 +44,8 @@ export default function Sidebar() {
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Tıp AI</h1>
-            <p className="text-sm text-slate-500">Tıbbi asistanınız</p>
+            <h1 className="text-xl font-semibold text-slate-900">Eğitim AI</h1>
+            <p className="text-sm text-slate-500">Öğrenim asistanınız</p>
           </div>
         </div>
       </div>

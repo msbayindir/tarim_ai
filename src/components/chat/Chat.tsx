@@ -155,13 +155,16 @@ export default function Chat({
         <div className="flex items-center space-x-3">
           <div className="h-10 w-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-sm">
             <span className="text-xl">
-              {category === "biyokimya1" && "🧬"}
-              {category === "biyokimya2" && "⚗️"}
+              {category === "inkilap" && "🏛️"}
+              {category === "matematik" && "🔢"}
+              {category === "turkce" && "📚"}
             </span>
           </div>
           <div>
             <h1 className="text-lg font-semibold text-slate-900 capitalize">
-              {category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"} Uzmanı
+              {category === "inkilap" && "İnkılap Tarihi Uzmanı"}
+              {category === "matematik" && "Matematik Uzmanı"}
+              {category === "turkce" && "Türkçe Uzmanı"}
             </h1>
             <p className="text-sm text-slate-500">
               Size yardımcı olmak için burada
@@ -177,15 +180,18 @@ export default function Chat({
             <div className="flex flex-col items-center justify-center h-full min-h-96 text-slate-400">
               <div className="h-20 w-20 rounded-3xl bg-slate-100 flex items-center justify-center mb-4">
                 <span className="text-3xl">
-                  {category === "biyokimya1" && "🧬"}
-                  {category === "biyokimya2" && "⚗️"}
+                  {category === "inkilap" && "🏛️"}
+                  {category === "matematik" && "🔢"}
+                  {category === "turkce" && "📚"}
                 </span>
               </div>
               <h3 className="text-lg font-medium text-slate-600 mb-2">
                 Merhaba!
               </h3>
               <p className="text-center text-slate-500 max-w-md">
-                {category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"}{" "}
+                {category === "inkilap" && "İnkılap Tarihi"}
+                {category === "matematik" && "Matematik"}
+                {category === "turkce" && "Türkçe"}{" "}
                 konusunda size nasıl yardımcı olabilirim? Sorularınızı sormaktan
                 çekinmeyin.
               </p>
@@ -236,7 +242,8 @@ export default function Chat({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={`${
-                  category === "biyokimya1" ? "Biyokimya 1" : "Biyokimya 2"
+                  category === "inkilap" ? "İnkılap Tarihi" :
+                  category === "matematik" ? "Matematik" : "Türkçe"
                 } hakkında bir şey sorun...`}
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-slate-900 placeholder-slate-500"
                 disabled={isTyping}

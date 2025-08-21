@@ -12,24 +12,26 @@ type Message = {
 };
 
 type CategoryMessages = {
-  biyokimya1: Message[];
-  biyokimya2: Message[];
+  inkilap: Message[];
+  matematik: Message[];
+  turkce: Message[];
   [key: string]: Message[];
 };
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  const [category, setCategory] = useState<string>("biyokimya1");
+  const [category, setCategory] = useState<string>("inkilap");
   const [categoryMessages, setCategoryMessages] = useState<CategoryMessages>({
-    biyokimya1: [],
-    biyokimya2: [],
+    inkilap: [],
+    matematik: [],
+    turkce: [],
   });
   useEffect(() => {
     const categoryParam = searchParams.get("category");
-    if (categoryParam && ["biyokimya1", "biyokimya2"].includes(categoryParam)) {
+    if (categoryParam && ["inkilap", "matematik", "turkce"].includes(categoryParam)) {
       setCategory(categoryParam);
     } else {
-      setCategory("biyokimya1");
+      setCategory("inkilap");
     }
   }, [searchParams]);
 
